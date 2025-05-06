@@ -1,0 +1,5 @@
+/app.db
+/mainv3.py
+/.env
+/.flaskenv
+/migrations/

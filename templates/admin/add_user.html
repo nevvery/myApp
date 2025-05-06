@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+    {{ form.name.label }}<br>
+    {{ form.name(size=32) }}<br><br>
+
+    {{ form.surname.label }}<br>
+    {{ form.surname(size=32) }}<br><br>
+
+    {{ form.patronymic.label }}<br>
+    {{ form.patronymic(size=32) }}<br><br>
+
+    {{ form.submit() }}
+    </form>
+
+
+    {% if form.errors %}
+    	{% for error in form.errors %}
+    		{{ error }}
+    	{% endfor %}
+
+    {% endif %}
+
+{% endblock %}

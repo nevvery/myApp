@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div>Привет админ - {{ current_user.name }} {{ current_user.surname }}
+        {% if current_user.patronymic %}
+        {{ current_user.patronymic }}
+        {% endif %}
+    </div>
+    <div>
+    <a href="{{ url_for('admin.admin_panel_add') }}">click</a>
+    </div>
+{% endblock %}

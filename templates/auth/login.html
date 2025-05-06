@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div style="color: red">{{ messages }}</div><br>
+        {% endif %}
+    {% endwith %}
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.username.label }}<br>
+        {{ form.username(size=32) }}<br><br>
+
+        {{ form.password.label }}<br>
+        {{ form.password(size=32) }}<br><br>
+
+        {{ form.remember_me() }}<br>{{ form.remember_me.label }}<br><br>
+
+        {{ form.submit() }}
+
+    </form>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <a href="{{ url_for('main.index') }}">Home</a>
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    {% else %}
+        <a href="{{ url_for('auth.login') }}">Login</a>
+    {% endif %}
+    <a href="{{ url_for('main.payments') }}">Payment</a>
+    Добрейшего денечка {{ current_user.name }}!
+    <a href="{{ url_for('admin.admin_panel') }}">Admin Panel</a>
+</div>
+{% with message = get_flashed_messages() %}
+    {% if message %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+{% block content %}
+
+{% endblock %}
+</body>
+</html>
