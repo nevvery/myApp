@@ -26,7 +26,7 @@ class Parent(db.Model, UserMixin):
     username: so.Mapped[str] = so.mapped_column(sa.String(64), nullable=False)
     password_hash: so.Mapped[str] = so.mapped_column(sa.String(64), nullable=False)
 
-    children: so.Mapped['Child'] = so.relationship(back_populates='parent')
+    children: so.Mapped[list['Child']] = so.relationship(back_populates='parent')
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
@@ -42,6 +42,7 @@ class Child(db.Model):
     name: so.Mapped[str] = so.mapped_column(sa.String(64))
     surname: so.Mapped[str] = so.mapped_column(sa.String(64))
     patronymic: so.Mapped[str | None] = so.mapped_column(sa.String(64), nullable=True)
+    group: so.Mapped[str] = so.mapped_column(sa.String(64))
 
     id_parent: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Parent.id), index=True)
     parent: so.Mapped[Parent] = so.relationship(back_populates="children")

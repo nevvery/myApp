@@ -12,12 +12,12 @@
     {% else %}
         <a href="{{ url_for('auth.login') }}">Login</a>
     {% endif %}
-    <a href="{{ url_for('main.payments') }}">Payment</a>
-    Добрейшего денечка {{ current_user.name }}!
+    <a href="{{ url_for('payment.payments') }}">Payment</a>
+    <a href="{{ url_for('main.profile') }}">Profile</a>
     <a href="{{ url_for('admin.admin_panel') }}">Admin Panel</a>
 </div>
-{% with message = get_flashed_messages() %}
-    {% if message %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
         <ul>
             {% for message in messages %}
                 <li>{{ message }}</li>

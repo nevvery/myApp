@@ -33,4 +33,7 @@ def create_app(config=Config) -> Flask:
     from app.admin_panel import bp as admin_bp
     app.register_blueprint(admin_bp)
 
+    from app.payment import bp as payment_bp
+    app.register_blueprint(payment_bp)
+
     return app

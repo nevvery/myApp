@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div>Профиль - {{ current_user.name }} {{ current_user.surname }}</div>
+    Добавить ребенка:
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.name.label }}<br>
+        {{ form.name(size=32) }}<br><br>
+
+        {{ form.surname.label }}<br>
+        {{ form.surname(size=32) }}<br><br>
+
+        {{ form.patronymic.label }}<br>
+        {{ form.patronymic(size=32) }}<br><br>
+
+        {{ form.group.label }}<br>
+        {{ form.group(size=32) }}<br><br>
+
+        {{ form.submit() }}<br>
+    </form>
+{% endblock %}
