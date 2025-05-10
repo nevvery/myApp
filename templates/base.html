@@ -3,19 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 <body>
-<div>
-    <a href="{{ url_for('main.index') }}">Home</a>
-    {% if current_user.is_authenticated %}
-        <a href="{{ url_for('auth.logout') }}">Logout</a>
-    {% else %}
-        <a href="{{ url_for('auth.login') }}">Login</a>
-    {% endif %}
-    <a href="{{ url_for('payment.payments') }}">Payment</a>
-    <a href="{{ url_for('main.profile') }}">Profile</a>
-    <a href="{{ url_for('admin.admin_panel') }}">Admin Panel</a>
-</div>
+<nav class="navbar navbar-expand-xl navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">Home</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBasic"
+                aria-controls="navbarBasic" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarBasic">
+            <!-- Левая часть навигации -->
+            <ul class="navbar-nav me-auto mb-2 mb-xl-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('payment.payments') }}">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.profile') }}">Profile</a>
+                </li>
+            </ul>
+            <!-- Правая часть навигации -->
+            <ul class="navbar-nav ms-auto mb-2 mb-xl-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.admin_panel') }}">Admin Panel</a>
+                </li>
+                {% if current_user.is_anonymous %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                    </li>
+                {% else %}
+                    <span class="navbar-text">
+                    {{ current_user.name }} {{ current_user.surname }} {% if current_user.patronymic %} {{ current_user.patronymic }} {% endif %}
+                    </span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
 {% with messages = get_flashed_messages() %}
     {% if messages %}
         <ul>
@@ -26,7 +55,9 @@
     {% endif %}
 {% endwith %}
 {% block content %}
-
 {% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
 </body>
 </html>

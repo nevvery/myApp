@@ -1,23 +1,31 @@
 {% extends 'base.html' %}
-
+{% import 'bootstrap_wtf.html' as wtf %}
 {% block content %}
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div style="color: red">{{ messages }}</div><br>
-        {% endif %}
-    {% endwith %}
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        {{ form.username.label }}<br>
-        {{ form.username(size=32) }}<br><br>
 
-        {{ form.password.label }}<br>
-        {{ form.password(size=32) }}<br><br>
+    {{ wtf.quick_form(form) }}
 
-        {{ form.remember_me() }}<br>{{ form.remember_me.label }}<br><br>
 
-        {{ form.submit() }}
 
-    </form>
+
+{#    {% with messages = get_flashed_messages() %}#}
+{#        {% if messages %}#}
+{#            <div style="color: red">{{ messages }}</div><br>#}
+{#        {% endif %}#}
+{#    {% endwith %}#}
+{#    <form action="" method="post">#}
+{#        {{ form.hidden_tag() }}#}
+{#        {{ form.username.label(class='form-label') }}<br>#}
+{#        {{ form.username(size=32, class='formControlInput') }}#}
+{##}
+{#        {{ form.password.label }}<br>#}
+{#        {{ form.password(size=32) }}<br><br>#}
+{#        <div class="form-check">#}
+{#            {{ form.remember_me(class='form-check-input') }}#}
+{#            {{ form.remember_me.label(class='form-check-label') }}#}
+{#        </div>#}
+{##}
+{#        {{ form.submit() }}#}
+{##}
+{#    </form>#}
 
 {% endblock %}

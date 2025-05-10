@@ -9,4 +9,5 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 class Config:
     BASE_DIR = BASE_DIR
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')

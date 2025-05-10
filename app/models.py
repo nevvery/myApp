@@ -44,14 +44,21 @@ class Child(db.Model):
     patronymic: so.Mapped[str | None] = so.mapped_column(sa.String(64), nullable=True)
     group: so.Mapped[str] = so.mapped_column(sa.String(64))
 
-    id_parent: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Parent.id), index=True)
+    id_parent: so.Mapped[int] = so.mapped_column(
+        sa.ForeignKey('parents.id', name='fk_child_parent_id'), index=True
+    )
     parent: so.Mapped[Parent] = so.relationship(back_populates="children")
 
 
 class Payment(db.Model):
     __tablename__ = 'payments'
-    id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    value: so.Mapped[float] = so.mapped_column(sa.Float)
-    last_pay: so.Mapped[datetime.datetime] = so.mapped_column(sa.DateTime(timezone=True), nullable=True, index=True)
 
-    id_payment_from_parent: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Parent.id), index=True)
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    value: so.Mapped[float] = so.mapped_column(sa.Float, nullable=False)
+    date_pay: so.Mapped[datetime.datetime] = so.mapped_column(sa.DateTime(timezone=True), nullable=True, index=True)
+    path_pdf_file: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=False)
+
+    id_child: so.Mapped[int] = so.mapped_column(
+        sa.ForeignKey('children.id', name='fk_payment_child_id'), index=True
+    )
+

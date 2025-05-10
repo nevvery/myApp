@@ -19,6 +19,7 @@ def create_app(config=Config) -> Flask:
 
     app = Flask(__name__, template_folder=template_dir)
     app.config.from_object(config)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     db.init_app(app)
     login.init_app(app)

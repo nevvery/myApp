@@ -1,22 +1,27 @@
 {% extends 'base.html' %}
-
+{% import 'bootstrap_wtf.html' as wtf %}
 {% block content %}
-	<div>Профиль - {{ current_user.name }} {{ current_user.surname }}</div>
-    Добавить ребенка:
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        {{ form.name.label }}<br>
-        {{ form.name(size=32) }}<br><br>
 
-        {{ form.surname.label }}<br>
-        {{ form.surname(size=32) }}<br><br>
 
-        {{ form.patronymic.label }}<br>
-        {{ form.patronymic(size=32) }}<br><br>
 
-        {{ form.group.label }}<br>
-        {{ form.group(size=32) }}<br><br>
-
-        {{ form.submit() }}<br>
-    </form>
+	<div>Профиль - {{ current_user.name }} {{ current_user.surname }} {% if current_user.patronymic %} {{ current_user.patronymic }} {% endif %}</div>
+    <br>
+    <h1>Добавить ребенка: </h1><br>
+    {{ wtf.quick_form(form) }}
+{#    <form action="" method="post">#}
+{#        {{ form.hidden_tag() }}#}
+{#        {{ form.name.label }}<br>#}
+{#        {{ form.name(size=32) }}<br><br>#}
+{##}
+{#        {{ form.surname.label }}<br>#}
+{#        {{ form.surname(size=32) }}<br><br>#}
+{##}
+{#        {{ form.patronymic.label }}<br>#}
+{#        {{ form.patronymic(size=32) }}<br><br>#}
+{##}
+{#        {{ form.group.label }}<br>#}
+{#        {{ form.group(size=32) }}<br><br>#}
+{##}
+{#        {{ form.submit() }}<br>#}
+{#    </form>#}
 {% endblock %}

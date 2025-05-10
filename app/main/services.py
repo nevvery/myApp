@@ -1,7 +1,7 @@
 from app.models import Parent, Child
 
 
-def add_children_to_parent(name_children: str, surname_children: str, patronymic_children: str, group_children: str,
+def tye_children_to_parent(name_children: str, surname_children: str, patronymic_children: str, group_children: str,
                            user_parent: Parent, db_session):
     children = Child(name=name_children,
                      surname=surname_children,

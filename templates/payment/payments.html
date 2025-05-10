@@ -1,5 +1,25 @@
 {% extends 'base.html' %}
-
+{% import 'bootstrap_wtf.html' as wtf %}
 {% block content %}
-	<h1>плоти налоги ну</h1>
+    {{ wtf.quick_form(form, enctype="multipart/form-data") }}
+{#    <div class="container mt-5">#}
+{#        <h1>Ввод данных</h1>#}
+{#        <form method="POST" class="col-md-6">#}
+{#            {{ form.hidden_tag() }}#}
+{#            <div class="mb-3">#}
+{#                {{ form.name_child.label(class="form-label") }}#}
+{#                {{ form.name_child(class="form-select") }}#}
+{#                {% if form.name_child.errors %}#}
+{#                    <div class="text-danger">#}
+{#                        {% for error in form.name_child.errors %}#}
+{#                            {{ error }}<br>#}
+{#                        {% endfor %}#}
+{#                    </div>#}
+{#                {% endif %}#}
+{#            </div>#}
+{#            <div class="mb-3">#}
+{#                {{ form.submit(class="btn btn-primary") }}#}
+{#            </div>#}
+{#        </form>#}
+{#    </div>#}
 {% endblock %}
