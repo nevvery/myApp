@@ -1,7 +1,7 @@
 from sqlalchemy.sql.coercions import expect
 
 from config import BASE_DIR
-from app.payment.forms import PaymentForm
+from app.payment.form import PaymentForm
 from app.models import Child, Payment
 
 from werkzeug.datastructures import FileStorage
@@ -15,7 +15,7 @@ import uuid
 from unidecode import unidecode
 
 
-def add_payment_to_db(db_session, pdf_file: FileStorage, value: str, id_child: str, date_pay: date):
+def add_payment_to_db(db_session, pdf_file: FileStorage, value: str, id_child: str, date_pay: date) -> None:
     child = db_session.query(Child).filter_by(id=int(id_child)).first()
 
     if not child:
@@ -33,8 +33,7 @@ def add_payment_to_db(db_session, pdf_file: FileStorage, value: str, id_child: s
         db_session.commit()
     except Exception as e:
         db_session.rollback()
-        print(e)
-        raise
+        raise Exception(e)
 
 
 def save_pdf_file(pdf_file: FileStorage, name_child: str, surname_child: str, date_pay: date, value: str) -> str:

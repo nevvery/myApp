@@ -51,7 +51,7 @@ class Child(db.Model):
 
 
 class Payment(db.Model):
-    __tablename__ = 'payments'
+    __tablename__: str = 'payments'
 
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     value: so.Mapped[float] = so.mapped_column(sa.Float, nullable=False)

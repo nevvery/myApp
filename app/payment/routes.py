@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from app.payment import bp
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.payment.forms import PaymentForm
+from app.payment.form import PaymentForm
 from app import db
 
 from app.payment.services import add_payment_to_db

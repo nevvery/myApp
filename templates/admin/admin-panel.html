@@ -5,8 +5,11 @@
         {% if current_user.patronymic %}
         {{ current_user.patronymic }}
         {% endif %}
+    </div><br>
+    <div>
+    <a href="{{ url_for('admin.admin_panel_add') }}">Добавить пользователя</a>
     </div>
     <div>
-    <a href="{{ url_for('admin.admin_panel_add') }}">click</a>
+        <a href="{{ url_for('admin.admin_panel_reset_password') }}">Сбросить пароль пользователя</a>
     </div>
 {% endblock %}
