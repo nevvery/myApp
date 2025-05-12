@@ -4,10 +4,10 @@ from app.models import Parent
 
 
 def test_get_user_select2_empty_query(db_session):
-    parent1 = Parent(id=1, name='Степан', surname='Иванов', patronymic='Иванович', username='s.ivanov')
+    parent1 = Parent(id=1, name='Степан', surname='Иванов', patronymic='Иванович', username='s.ivanov', fs_uniquifier='124')
     parent1.set_password('<PASSWORD1>')
 
-    parent2 = Parent(id=2, name='Руслан', surname='Щербак', patronymic=None, username='r.scherbak')
+    parent2 = Parent(id=2, name='Руслан', surname='Щербак', patronymic=None, username='r.scherbak', fs_uniquifier='123')
     parent2.set_password('<PASSWORD2>')
 
     db_session.add_all([parent1, parent2])
@@ -21,7 +21,7 @@ def test_get_user_select2_empty_query(db_session):
 
 
 def test_get_user_select2_search_by_name(db_session):
-    parent = Parent(id=1, name='Степан', surname='Иванов', patronymic='Иванович', username='s.ivanov')
+    parent = Parent(id=1, name='Степан', surname='Иванов', patronymic='Иванович', username='s.ivanov', fs_uniquifier='123')
     parent.set_password('<PASSWORD>')
 
     db_session.add(parent)
@@ -52,9 +52,10 @@ def test_user_to_db(db_session):
     surname = 'Иванов'
     patronymic = "Иванович"
     username = 'r.ivanov'
+    fs_uniquifier = '123'
 
     add_user_to_db(db_session=db_session, name=name, surname=surname, password='<PASSWORD>', username=username,
-                   patronymic=patronymic)
+                   patronymic=patronymic, fs_uniquifier=fs_uniquifier)
 
     parent = db_session.query(Parent).filter(Parent.name == name).first()
 

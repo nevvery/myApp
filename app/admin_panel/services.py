@@ -1,15 +1,19 @@
 import string
 from typing import List, Type
 
-from app import db
 from transliterate import translit
 from app.models import Parent
-import secrets
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
+import secrets
+from flask import current_app
+from flask_security import SQLAlchemyUserDatastore
 
 
-def make_user(db_session: Session, name: str, surname: str, patronymic: str = None) -> tuple[str, str] | None:
+def make_user(db_session: Session,
+              name: str, surname: str,
+              patronymic: str = None,
+              ) -> tuple[str, str] | None:
     if not isinstance(name, str):
         raise TypeError('Name must be strings')
     if not isinstance(surname, str):
@@ -19,10 +23,11 @@ def make_user(db_session: Session, name: str, surname: str, patronymic: str = No
 
     username = generate_username(db_session=db_session, name=name, surname=surname)
     password = generate_password()
+    fs_uniquifier = secrets.token_urlsafe()
 
     try:
         add_user_to_db(db_session=db_session, username=username, password=password, name=name, surname=surname,
-                       patronymic=patronymic)
+                       patronymic=patronymic, fs_uniquifier=fs_uniquifier)
         return username, password
     except Exception as e:
         db_session.rollback()
@@ -50,9 +55,15 @@ def generate_password() -> str:
     return ''.join(secrets.choice(chars) for _ in range(8))
 
 
-def add_user_to_db(db_session: Session, username: str, password: str, name: str, surname: str,
+def add_user_to_db(db_session: Session,
+                   username: str,
+                   password: str,
+                   name: str,
+                   surname: str,
+                   fs_uniquifier: str,
+                   role: str = 'parent',
                    patronymic: str = None) -> None:
-    user = Parent(username=username, name=name, surname=surname, patronymic=patronymic)
+    user = Parent(username=username, name=name, surname=surname, patronymic=patronymic, fs_uniquifier=fs_uniquifier)
 
     user.set_password(password)
 

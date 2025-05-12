@@ -10,6 +10,14 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
     UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT')
+    SECURITY_LOGIN_URL = '/auth/login'
+    SECURITY_POST_LOGIN_VIEW = '/main/index'
+    SECURITY_POST_LOGOUT_VIEW = '/auth/login'
+    SECURITY_REGISTERABLE = False
+    SESSION_COOKIE_SAMESITE = 'Strict'
+    REMEMBER_COOKIE_SAMESITE = 'Strict'
     TESTING = False
 
 

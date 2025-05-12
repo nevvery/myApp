@@ -26,9 +26,11 @@
             </ul>
             <!-- Правая часть навигации -->
             <ul class="navbar-nav ms-auto mb-2 mb-xl-0">
+                {% if current_user.has_role('admin') %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('admin.admin_panel') }}">Admin Panel</a>
                 </li>
+                {% endif %}
                 {% if current_user.is_anonymous %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>

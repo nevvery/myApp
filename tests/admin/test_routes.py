@@ -4,7 +4,7 @@ from app.models import Parent
 
 
 def test_admin_panel_reset_password_success(auth_client, db_session):
-    parent = Parent(id=1, name='Степан', surname='Иванов', patronymic='Иванович', username='s.ivanov')
+    parent = Parent(id=1, name='Степан', surname='Иванов', patronymic='Иванович', username='s.ivanov', fs_uniquifier='123')
     parent.set_password('<PASSWORD>')
 
     db_session.add(parent)
@@ -49,10 +49,10 @@ def test_admin_panel_reset_password_get(auth_client):
 
 
 def test_admin_panel_search_parents(auth_client, db_session):
-    parent1 = Parent(id=1, name='Степан', surname='Иванов', patronymic='Иванович', username='s.ivanov')
+    parent1 = Parent(id=1, name='Степан', surname='Иванов', patronymic='Иванович', username='s.ivanov', fs_uniquifier='123')
     parent1.set_password('<PASSWORD1>')
 
-    parent2 = Parent(id=2, name='Руслан', surname='Щербак', patronymic=None, username='r.scherbak')
+    parent2 = Parent(id=2, name='Руслан', surname='Щербак', patronymic=None, username='r.scherbak', fs_uniquifier='124')
     parent2.set_password('<PASSWORD2>')
 
     db_session.add_all([parent1, parent2])

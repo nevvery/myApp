@@ -2,8 +2,10 @@ from app.auth import bp
 from flask import render_template, url_for, redirect, flash
 from app.auth.form import LoginForm
 from app import db
-from app.models import Parent
-from flask_login import current_user, login_user, logout_user
+from app.models import Parent, Role
+from flask_security import login_user, Security, SQLAlchemyUserDatastore, logout_user
+
+user_datastore = SQLAlchemyUserDatastore(db, Parent, Role)
 
 
 @bp.route('/login', methods=['GET', 'POST'])
@@ -11,7 +13,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = Parent.query.filter_by(username=form.username.data).first()
+        user = user_datastore.find_user(username=form.username.data)
 
         if user is None or not user.verify_password(form.password.data):
             flash('Неправильный логин или пароль')

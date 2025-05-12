@@ -1,4 +1,4 @@
-from flask_login import current_user
+from flask_security import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired, FileAllowed
 from wtforms import StringField, SelectField, DateField, SubmitField, FileField

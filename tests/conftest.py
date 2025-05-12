@@ -2,8 +2,9 @@ import pytest
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app import create_app, db
-from app.models import Parent
+from app.models import Parent, Role
 from config import TestConfig
+from app.security import user_datastore
 
 
 @pytest.fixture
@@ -37,10 +38,16 @@ def auth_client(client, db_session):
         surname="Adminov",
         patronymic="Adminovich",
         username="admin",
+        fs_uniquifier='999'
     )
     user.set_password("admin123")
-    db_session.add(user)
+
+    role = Role(name="admin", description="Administrator")
+    db_session.add_all([user, role])
+    user_datastore.add_role_to_user(user, role)
     db_session.commit()
+
+
 
     with client:
         client.post('/auth/login', data={
