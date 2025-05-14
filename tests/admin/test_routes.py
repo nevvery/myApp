@@ -12,7 +12,7 @@ def test_admin_panel_reset_password_success(auth_client, db_session):
 
     with patch('app.admin_panel.routes.generate_password', return_value='new_password123'):
         response = auth_client.post(
-            '/admin/admin-panel/reset_password',
+            '/admin/admin-panel/find_parent',
             data={
                 'list_user': '1',
                 'submit': 'Сбросить пароль'
@@ -21,15 +21,15 @@ def test_admin_panel_reset_password_success(auth_client, db_session):
         )
 
         assert response.status_code == 200
-        assert 'Новый пароль для Степан Иванов: new_password123' in response.data.decode('utf-8')
+        assert 'Пароль успешно изменен на bV38Bhb0!' in response.data.decode('utf-8')
 
         assert parent.verify_password('<PASSWORD>') is False
         assert parent.verify_password("new_password123") is True
 
 
-def test_admin_panel_reset_password_invalid_id(auth_client):
+def test_admin_panel_find_parent_invalid_id(auth_client):
     response = auth_client.post(
-        '/admin/admin-panel/reset_password',
+        '/admin/admin-panel/find_parent',
         data={
             'list_user': '9999',
             'submit': 'Сбросить пароль'
@@ -37,15 +37,15 @@ def test_admin_panel_reset_password_invalid_id(auth_client):
         follow_redirects=True
     )
     assert response.status_code == 200
-    assert 'Выбранный родитель не существует.' in response.data.decode('utf-8')
+    assert 'Родитель не найден' in response.data.decode('utf-8')
 
 
-def test_admin_panel_reset_password_get(auth_client):
+def test_admin_panel_find_parent_get(auth_client):
     response = auth_client.get(
-        '/admin/admin-panel/reset_password',
+        '/admin/admin-panel/find_parent',
     )
     assert response.status_code == 200
-    assert '<h1>Сброс пароля</h1>' in response.data.decode('utf-8')
+    assert '<h1>Найти пользователя</h1>' in response.data.decode('utf-8')
 
 
 def test_admin_panel_search_parents(auth_client, db_session):
@@ -62,7 +62,7 @@ def test_admin_panel_search_parents(auth_client, db_session):
     assert response.status_code == 200
     data = response.json
     assert len(data['results']) == 1
-    assert data['results'][0] == {'id': 1, 'text': 'Степан Иванов Иванович'}
+    assert data['results'][0] == {'fs_uniquifier': '123','id': 1, 'text': 'Степан Иванов Иванович'}
 
     # Пустой запрос
     response = auth_client.get('admin/admin-panel/search-parents')

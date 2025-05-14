@@ -2,12 +2,18 @@ import string
 from typing import List, Type
 
 from transliterate import translit
-from app.models import Parent
+from app.models import Parent, Role, Payment, Child
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 import secrets
 from flask import current_app
+
 from flask_security import SQLAlchemyUserDatastore
+from app.admin_panel.form import ChangeRoleForm
+
+import os
+from openpyxl import Workbook, load_workbook
+from datetime import datetime
 
 
 def make_user(db_session: Session,
@@ -64,10 +70,18 @@ def add_user_to_db(db_session: Session,
                    role: str = 'parent',
                    patronymic: str = None) -> None:
     user = Parent(username=username, name=name, surname=surname, patronymic=patronymic, fs_uniquifier=fs_uniquifier)
-
     user.set_password(password)
 
     db_session.add(user)
+    db_session.flush()
+
+    role: Role | None = db_session.query(Role).filter_by(name=role).first()
+    test = db_session.query(Role).all()
+    print(test, 1111111111)
+    if role is None:
+        raise ValueError('Role not found')
+
+    user.roles.append(role)
     db_session.commit()
 
 
@@ -84,3 +98,73 @@ def get_user_select2(query: str, db_session: Session) -> list[Type[Parent]]:
             )
         ).order_by(Parent.surname).limit(10).all()
     )
+
+
+def add_role_for_parent(db_session: Session,
+                        uds: SQLAlchemyUserDatastore,
+                        fs_uniquifier: str,
+                        form: ChangeRoleForm) -> tuple[str, str]:
+    role_name = None
+    user: Parent = uds.find_user(fs_uniquifier=fs_uniquifier)
+
+    choices = form.role.choices
+
+    for choice in choices:
+        role_id = choice[0]
+        if role_id == form.role.data:
+            role_name = choice[1]
+
+    uds.add_role_to_user(user, role_name)
+    db_session.commit()
+
+    return role_name, user.name
+
+
+def save_to_excel(db_session: Session):
+    excel_file = 'Информация о платежах.xlsx'
+
+    # Query to join Payment and Child tables
+    data = db_session.query(
+        Payment.value,
+        Payment.date_pay,
+        Child.name,
+        Child.surname,
+        Child.patronymic,
+        Child.group
+    ).join(
+        Child, Payment.id_child == Child.id
+    ).all()
+
+    try:
+        # Initialize or load the workbook
+        if not os.path.exists(excel_file):
+            wb = Workbook()
+            ws = wb.active
+            ws.title = "Платежи"
+            # Define headers
+            ws.append(["Дата загрузки", "ФИО ребенка", "Группа", "Месяц", "Сумма"])
+        else:
+            wb = load_workbook(excel_file)
+            ws = wb.active
+
+        # Append each row of data
+        for row in data:
+            full_name = f"{row.name} {row.surname} {row.patronymic or ''}".strip()
+
+            month_year = row.date_pay.strftime("%B %Y") if row.date_pay else ""
+            ws.append([
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),  # Current timestamp
+                full_name,  # Child's full name
+                row.group,  # Child's group
+                month_year,  # Payment month/year
+                row.value  # Payment amount
+            ])
+
+        # Save the workbook
+        wb.save(excel_file)
+        print(f"Данные успешно сохранены в файл: {excel_file}")
+
+    except PermissionError:
+        print(f"Ошибка: Нет доступа к файлу {excel_file}. Закройте его и попробуйте снова.")
+    except Exception as e:
+        print(f"Произошла ошибка при сохранении файла: {str(e)}")

@@ -2,64 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Your App{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- Optional custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
 </head>
 <body>
-<nav class="navbar navbar-expand-xl navbar-light bg-light">
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('main.index') }}">Home</a>
+        <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">Возьмите на работу, прошу</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBasic"
                 aria-controls="navbarBasic" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarBasic">
-            <!-- Левая часть навигации -->
+            <!-- Left Navigation -->
             <ul class="navbar-nav me-auto mb-2 mb-xl-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('payment.payments') }}">Payment</a>
+                    <a class="nav-link" href="{{ url_for('payment.payments') }}">Платежи</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.profile') }}">Profile</a>
+                    <a class="nav-link" href="{{ url_for('main.profile') }}">Профиль</a>
                 </li>
-            </ul>
-            <!-- Правая часть навигации -->
-            <ul class="navbar-nav ms-auto mb-2 mb-xl-0">
                 {% if current_user.has_role('admin') %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.admin_panel') }}">Admin Panel</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.admin_panel') }}">Панель администратора</a>
+                    </li>
                 {% endif %}
+            </ul>
+            <!-- Right Navigation -->
+            <ul class="navbar-nav ms-auto mb-2 mb-xl-0 align-items-center">
                 {% if current_user.is_anonymous %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">Войти</a>
                     </li>
                 {% else %}
-                    <span class="navbar-text">
-                    {{ current_user.name }} {{ current_user.surname }} {% if current_user.patronymic %} {{ current_user.patronymic }} {% endif %}
+                    <span class="navbar-text me-3">
+                        {{ current_user.name }} {{ current_user.surname }}
+                        {% if current_user.patronymic %} {{ current_user.patronymic }} {% endif %}
                     </span>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Выйти</a>
                     </li>
                 {% endif %}
             </ul>
         </div>
     </div>
 </nav>
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
+
+<!-- Flashed Messages -->
+<div class="container mt-3">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endfor %}
-        </ul>
-    {% endif %}
-{% endwith %}
-{% block content %}
-{% endblock %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<!-- Main Content -->
+<main class="flex-grow-1">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-        crossorigin="anonymous"></script>
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bk");
+</script>
+<!-- Optional custom JS -->
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% block scripts %}{% endblock %}
 </body>
 </html>

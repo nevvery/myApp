@@ -42,9 +42,11 @@ def auth_client(client, db_session):
     )
     user.set_password("admin123")
 
-    role = Role(name="admin", description="Administrator")
-    db_session.add_all([user, role])
-    user_datastore.add_role_to_user(user, role)
+    role_admin = Role(name="admin", description="Administrator")
+    role_parent = Role(name='parent', description="Parent Role")
+    db_session.add_all([user, role_admin, role_parent])
+    db_session.flush()
+    user_datastore.add_role_to_user(user, role_admin)
     db_session.commit()
 
 

@@ -47,7 +47,7 @@ def test_generate_username(db_session):
     assert result == 'r.ivanov'
 
 
-def test_user_to_db(db_session):
+def test_user_to_db(db_session, auth_client):
     name = 'Руслан'
     surname = 'Иванов'
     patronymic = "Иванович"

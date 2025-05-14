@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Найти пользователя</h1><br>
+    <form id="findUserForm" method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.list_user.label }}
+            <input id="list_user" name="list_user" class="form-control select2" placeholder="Введите ФИО родителя">
+        </div>
+        <ul class="error">
+            {% for error in form.list_user.errors %}
+                <h3>{{ error }}</h3>
+            {% endfor %}
+        </ul>
+        <br>
+    </form>
+
+    <!-- Блок с кнопками для действий -->
+    <div id="actions" style="display: none; margin-top: 20px;">
+        <h3>Действия с пользователем <span id="selectedUser"></span></h3>
+        <form method="GET" action="#" style="display: inline;" id="resetPasswordForm">
+            <input type="hidden" name="list_user" id="parent_id_reset" value="">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="btn btn-warning">Сбросить пароль</button>
+        </form>
+        <form method="GET" action="#" style="display: inline;" id="changeRoleForm">
+            <input type="hidden" name="list_user" id="parent_id_role">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="btn btn-info">Изменить роль</button>
+        </form>
+        <form method="POST" action="{{ url_for('admin.admin_panel_change_role', fs_uniquifier=1) }}" style="display: inline;">
+            <input type="hidden" name="list_user" id="parent_id_role">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="btn btn-info">Хз чё ещё добавить пока что</button>
+        </form>
+        <!-- Добавь больше кнопок для других действий -->
+    </div>
+
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                ajax: {
+                    url: '{{ url_for("admin.admin_panel_search_parents") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {q: params.term || ''};
+                    },
+                    processResults: function (data) {
+                        return {results: data.results};
+                    },
+                    cache: true
+                },
+                placeholder: 'Введите ФИО родителя',
+                minimumInputLength: 0,
+                allowClear: true,
+                width: '100%',
+                templateSelection: function (data, container) {
+                    return data.text || data.id;
+                },
+                templateResult: function (data) {
+                    return data.text;
+                }
+            });
+
+            // Обновляем выбранный элемент и показываем кнопки
+            $('.select2').on('select2:select', function (e) {
+                var selectedId = e.params.data.id;
+                var selectedText = e.params.data.text;
+                var fsUniquifier = e.params.data.fs_uniquifier; // Получаем fs_uniquifier
+                $(this).val(selectedId).trigger('change');
+                var $element = $(this);
+                $element.data('selected-text', selectedText);
+                $element.trigger('change.select2');
+
+                $('#actions').show();
+                $('#selectedUser').text(selectedText);
+                $('#parent_id_reset').val(selectedId);
+                $('#parent_id_role').val(selectedId);
+
+                // Обновляем action формы сброса пароля с fs_uniquifier
+                if (fsUniquifier) {
+                    var resetPasswordUrl = '{{ url_for("admin.admin_panel_reset_password", fs_uniquifier="FS_UNIQUIFIER") }}';
+                    resetPasswordUrl = resetPasswordUrl.replace('FS_UNIQUIFIER', fsUniquifier);
+                    $('#resetPasswordForm').attr('action', resetPasswordUrl);
+
+                    var changeRoleUrl = '{{ url_for("admin.admin_panel_change_role", fs_uniquifier="FS_UNIQUIFIER") }}';
+                    changeRoleUrl = changeRoleUrl.replace('FS_UNIQUIFIER', fsUniquifier);
+                    $('#changeRoleForm').attr('action', changeRoleUrl);
+                }
+            });
+
+            // Переопределяем templateSelection для использования сохранённого текста
+            $('.select2').on('change.select2', function () {
+                var selectedText = $(this).data('selected-text') || 'Введите ФИО родителя';
+                $('.select2-selection__rendered').text(selectedText);
+            });
+
+            // Очистка поля и скрытие кнопок
+            $('.select2').on('select2:unselect', function (e) {
+                $(this).val('').data('selected-text', '').trigger('change.select2');
+                $('#actions').hide();
+            });
+        });
+    </script>
+{% endblock %}

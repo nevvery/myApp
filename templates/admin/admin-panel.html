@@ -1,15 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div>Привет админ - {{ current_user.name }} {{ current_user.surname }}
-        {% if current_user.patronymic %}
-        {{ current_user.patronymic }}
-        {% endif %}
-    </div><br>
-    <div>
-    <a href="{{ url_for('admin.admin_panel_add') }}">Добавить пользователя</a>
+<div class="container mt-5">
+    <div class="card shadow-sm p-4">
+        <h3 class="mb-4 text-primary">
+            Администратор - {{ current_user.name }} {{ current_user.surname }}
+            {% if current_user.patronymic %}
+                {{ current_user.patronymic }}
+            {% endif %}
+        </h3>
+        <div class="d-flex flex-column gap-3">
+            <a href="{{ url_for('admin.admin_panel_add') }}" class="btn btn-primary btn-lg">
+                Добавить пользователя
+            </a>
+            <a href="{{ url_for('admin.admin_panel_find_parent') }}" class="btn btn-outline-primary btn-lg">
+                Найти пользователя
+            </a>
+            <a href="{{ url_for('admin.admin_panel_download_excel') }}" class="btn btn-outline-primary btn-lg">
+                Скачать Excel File
+            </a>
+        </div>
     </div>
-    <div>
-        <a href="{{ url_for('admin.admin_panel_reset_password') }}">Сбросить пароль пользователя</a>
-    </div>
+</div>
 {% endblock %}
